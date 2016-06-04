@@ -20,7 +20,7 @@ window.undertone = ({
   clock_hz = 22050 # 1024/2048 * 44100
   signal_0_hz = 21878 # 1016/2048 * 44100
   signal_1_hz = 21705 # 1008/2048 * 44100
-} = {}) -> 
+} = {}) ->
 
   clock_bin = Math.floor 0.5 + (fft_size * clock_hz)/44100
   signal_0_bin = Math.floor 0.5 + (fft_size * signal_0_hz)/44100
