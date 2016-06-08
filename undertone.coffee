@@ -17,9 +17,9 @@ window.undertone = ({
   gap_length = 16
   fft_size = 2048
   # TODO: parameterise the frequency gap, not the frequencies themselves
-  clock_hz = 22050 # 1024/2048 * 44100
-  signal_0_hz = 21878 # 1016/2048 * 44100
-  signal_1_hz = 21705 # 1008/2048 * 44100
+  clock_hz = (1023 * 44100)/2048
+  signal_0_hz = (1015 * 44100)/2048
+  signal_1_hz = (1007 * 44100)/2048
 } = {}) ->
 
   clock_bin = Math.floor 0.5 + (fft_size * clock_hz)/44100
@@ -32,17 +32,18 @@ window.undertone = ({
 
     broadcast: (message) ->
 
-      duration = 1
+      duration = 2
       samples = Math.floor duration * context.sampleRate
 
-      buffer = context.createBuffer(1, samples, context.sampleRate)
-      channel_buffer = buffer.getChannelData(0)
+      # Send a random 1 or 0 for now
       signal_hz = if Math.random() < 0.5 then signal_0_hz else signal_1_hz
+
+      buffer = context.createBuffer(2, samples, context.sampleRate)
+      clock_buffer = buffer.getChannelData(0)
+      signal_buffer = buffer.getChannelData(1)
       for a in [0...samples]
-        channel_buffer[a] = (
-          Math.cos(Math.PI * 2 * clock_hz * a/context.sampleRate) +
-          Math.cos(Math.PI * 2 * signal_hz * a/context.sampleRate)
-        )
+        clock_buffer[a] = Math.cos((Math.PI * 2 * clock_hz * a)/context.sampleRate)
+        signal_buffer[a] = Math.cos((Math.PI * 2 * signal_hz * a)/context.sampleRate)
 
       source = context.createBufferSource()
       source.buffer = buffer
